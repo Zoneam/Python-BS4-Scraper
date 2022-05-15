@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup as bs4
 import requests
 import re
-import pandas as pd
 import pprint
 
 
