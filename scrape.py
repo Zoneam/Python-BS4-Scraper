@@ -20,17 +20,17 @@ def scrape_pages():
     data = []
     for idx, page in enumerate(pages):
         soup = bs4(requests.get(page[0]).text, 'html.parser')
-        inner_data = {}
+        inner_data = []
         for i, item in enumerate(soup.findAll("div", {"class": "product-listing-price"})):
-            buy_button = ""
+            in_stock = ""
             price = p.findall(item.text.strip())
-            buy_button = item.find_next_sibling("button").text
-            if buy_button != 'Notify': # Filtering only in stock items
-                title = item.find_previous_sibling("h2").text
-                inner_data[page[1] + 'ammo' + '_' + str(i)] = ({'title': title, 'price': price, 'in_stock': buy_button})
+            in_stock = True if item.find_next_sibling("button").text ==  'Add To Cart' else False
+            title = item.find_previous_sibling("h2").text
+            if in_stock != 'not in stock': # Filtering only in stock items
+                inner_data.append({'title': title, 'price': price, 'in_stock': in_stock})
         if inner_data:
-            data.append(inner_data)
-    pprint.PrettyPrinter(depth = 5).pprint(data)  
+            data.append({page[1]:inner_data})
+    pprint.PrettyPrinter(depth = 5).pprint(data[3]['shotgun'])  
 
 
 scrape_pages()
